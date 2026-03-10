@@ -81,21 +81,13 @@ function withWebEngageBridgingHeader(config) {
         'ios',
         (config) => {
             const { projectRoot } = config.modRequest;
-
             const iosPath = path.join(projectRoot, 'ios');
-
-            const projectPath = path.join(iosPath, `${getProjectName(iosPath)}.xcodeproj/project.pbxproj`);
-            const bridgingHeaderPath = findBridgingHeaderPath(projectPath);
-
+            const projectName = getProjectName(iosPath);
+            const projectPath = path.join(iosPath, `${projectName}.xcodeproj/project.pbxproj`);
+            const bridgingHeaderPath = findOrCreateBridgingHeaderPath(projectPath, iosPath, projectName);
             const fullPath = path.join(iosPath, bridgingHeaderPath);
 
-            let contents = '';
-            try {
-                contents = fs.readFileSync(fullPath, 'utf8');
-            } catch (e) {
-                throw new Error(`Could not read bridging header at ${fullPath}: ${e}`);
-            }
-
+            let contents = fs.existsSync(fullPath) ? fs.readFileSync(fullPath, 'utf8') : '';
             const updatedLines = contents.split('\n');
             let modified = false;
 
@@ -110,7 +102,7 @@ function withWebEngageBridgingHeader(config) {
                 fs.writeFileSync(fullPath, updatedLines.join('\n'), 'utf8');
                 console.log(`✅ Added React imports to bridging header: ${bridgingHeaderPath}`);
             } else {
-                console.log(`ℹ️ Bridging header already contains all React imports: ${bridgingHeaderPath}`);
+                console.log(`ℹ️ Bridging header already contains all React imports`);
             }
 
             return config;
@@ -127,16 +119,37 @@ function getProjectName(iosPath) {
     return xcodeproj.replace(/\.xcodeproj$/, '');
 }
 
-function findBridgingHeaderPath(projectFilePath) {
-    const pbxproj = fs.readFileSync(projectFilePath, 'utf8');
-
+function findOrCreateBridgingHeaderPath(projectFilePath, iosPath, projectName) {
+    let pbxproj = fs.readFileSync(projectFilePath, 'utf8');
     const match = pbxproj.match(/SWIFT_OBJC_BRIDGING_HEADER = ([^;]+);/);
-    if (!match) {
-        throw new Error('Could not find SWIFT_OBJC_BRIDGING_HEADER in project.pbxproj');
+    
+    if (match) {
+        const headerPath = match[1].trim().replace(/^"|"$/g, '');
+        console.log(`🔷 Found bridging header: ${headerPath}`);
+        return headerPath;
     }
 
-    const headerPath = match[1].trim().replace(/^"|"$/g, '');
-    console.log(`🔷 Found bridging header: ${headerPath}`);
+    const headerPath = `${projectName}/${projectName}-Bridging-Header.h`;
+    const fullPath = path.join(iosPath, headerPath);
+    
+    if (!fs.existsSync(fullPath)) {
+        fs.writeFileSync(fullPath, '', 'utf8');
+    }
+
+    pbxproj = pbxproj.replace(
+        /(SWIFT_OBJC_BRIDGING_HEADER = )/g,
+        `$1"${headerPath}"; //\n\t\t\t\tSWIFT_OBJC_BRIDGING_HEADER = `
+    );
+    
+    if (!pbxproj.includes(`SWIFT_OBJC_BRIDGING_HEADER = "${headerPath}"`)) {
+        pbxproj = pbxproj.replace(
+            /buildSettings = \{/,
+            `buildSettings = {\n\t\t\t\tSWIFT_OBJC_BRIDGING_HEADER = "${headerPath}";`
+        );
+    }
+    
+    fs.writeFileSync(projectFilePath, pbxproj, 'utf8');
+    console.log(`✅ Created bridging header: ${headerPath}`);
     return headerPath;
 }
 
