@@ -23,21 +23,6 @@ public class WebEngageAppDelegate: ExpoAppDelegateSubscriber {
         return true 
     }
     
-    public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool{
-        if let url = userActivity.webpageURL {
-            WebEngage.sharedInstance().deeplinkManager.getAndTrackDeeplink(url, callbackBlock: { [self] location in
-              //send location to react
-                if self.weBridge == nil {
-                  self.weBridge = WEGWebEngageBridge()
-              }
-                self.weBridge!.sendUniversalLinkLocation(location)
-          })
-        }
-          
-      return true
-    }
-
-    
 }
 
 
