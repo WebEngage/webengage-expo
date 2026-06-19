@@ -11,11 +11,10 @@ Pod::Spec.new do |s|
   s.author         = package['author']
   s.homepage       = package['homepage']
   s.platforms      = {
-    :ios => '15.1',
-    :tvos => '15.1'
+    :ios => '12'
   }
   s.swift_version  = '5.4'
-  s.source         = { git: 'https://www.google.com' }
+  s.source         = { git: 'https://github.com/WebEngage/webengage-expo.git' }
   s.static_framework = true
   s.dependency 'ExpoModulesCore'
   s.dependency 'React-Core'
