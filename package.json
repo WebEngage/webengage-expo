@@ -27,19 +27,18 @@
   "license": "MIT",
   "homepage": "https://github.com/WebEngage/webengage-expo#readme",
   "dependencies": {
-    "react-native-webengage": "^1.6.1"
   },
   "devDependencies": {
     "@types/react": "~19.0.0",
     "expo-module-scripts": "^4.1.6",
     "expo": "~53.0.0",
     "react-native": "0.79.1",
-    "react-native-webengage": "^1.6.1"
+    "react-native-webengage": "^2.0.0"
   },
   "peerDependencies": {
     "expo": "*",
     "react": "*",
     "react-native": "*",
-    "react-native-webengage": "*"
+    "react-native-webengage": ">=2.0.0"
   }
 }

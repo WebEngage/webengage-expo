@@ -19,9 +19,12 @@ Pod::Spec.new do |s|
   s.static_framework = true
   s.dependency 'ExpoModulesCore'
   s.dependency 'React-Core'
-  s.dependency 'WebEngage'
+  if ENV['WEBENGAGE_USE_CORE'] == 'true'
+    s.dependency 'WebEngage/Core','>= 6.22.0'
+  else
+    s.dependency 'WebEngage','>= 6.22.0'
+  end
   s.dependency 'react-native-webengage'
-s.dependency 'React-Core'
   # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',
