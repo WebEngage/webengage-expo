@@ -1,7 +1,7 @@
 import ExpoModulesCore
 import WebEngage
 
-private let WEGExpoPluginVersion = "0.0.2"
+private let WEGExpoPluginVersion = "0.0.3"
 
 public class WebEngageAppDelegate: ExpoAppDelegateSubscriber {
     
