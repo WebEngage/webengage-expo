@@ -1,6 +1,7 @@
 import ExpoModulesCore
 import WebEngage
 
+private let WEGExpoPluginVersion = "0.0.3"
 
 public class WebEngageAppDelegate: ExpoAppDelegateSubscriber {
     
@@ -9,17 +10,17 @@ public class WebEngageAppDelegate: ExpoAppDelegateSubscriber {
    public func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
        
-       let autoRegister = Bundle.main.object(forInfoDictionaryKey: "WEGAutoRegister") as? Bool ?? true
+        let autoRegister = Bundle.main.object(forInfoDictionaryKey: "WEGAutoRegister") as? Bool ?? true
         weBridge = WEGWebEngageBridge()
-       
-       WebEngage.sharedInstance().pushNotificationDelegate = self.weBridge!
+        WebEngage.sharedInstance().pushNotificationDelegate = self.weBridge!
         WebEngage.sharedInstance().application(UIApplication.shared,
                                                 didFinishLaunchingWithOptions: launchOptions,
                                                notificationDelegate: self.weBridge!,
                                                 autoRegister: autoRegister)
-       if #available(iOS 10.0, *) {
-         UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
-       }
+        initialiseWEGVersion();
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+        }
         return true 
     }
     
@@ -37,7 +38,10 @@ public class WebEngageAppDelegate: ExpoAppDelegateSubscriber {
       return true
     }
 
-    
+    private func initialiseWEGVersion() {
+        let key: WegVersionKey = .EXPO_RN
+        WebEngage.sharedInstance().setVersionForChildSDK(WEGExpoPluginVersion, for: key)
+    }
 }
 
 
