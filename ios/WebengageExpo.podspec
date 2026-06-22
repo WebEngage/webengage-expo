@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.author         = package['author']
   s.homepage       = package['homepage']
   s.platforms      = {
-    :ios => '12'
+    :ios => '13'
   }
   s.swift_version  = '5.4'
   s.source         = { git: 'https://github.com/WebEngage/webengage-expo.git' }
