@@ -26,12 +26,11 @@
   "author": "WebEngage",
   "license": "MIT",
   "homepage": "https://github.com/WebEngage/webengage-expo#readme",
-  "dependencies": {
-  },
   "devDependencies": {
+    "@expo/config-plugins": "^56.0.9",
     "@types/react": "~19.0.0",
-    "expo-module-scripts": "^4.1.6",
     "expo": "~53.0.0",
+    "expo-module-scripts": "^4.1.6",
     "react-native": "0.79.1",
     "react-native-webengage": "^2.0.1"
   },
